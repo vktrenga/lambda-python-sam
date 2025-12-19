@@ -1,9 +1,12 @@
 import json
 
 USERS = [
-    {"id": 1, "name": "Alice"},
-    {"id": 2, "name": "Bob"},
-    {"id": 3, "name": "Charlie"}
+    {"id": 1, "name": "Rengaraj"},
+    {"id": 2, "name": "Sachin"},
+    {"id": 3, "name": "Dharshika"},
+    {"id": 4, "name": "Surya"},
+    {"id": 5, "name": "Harish"}
+
 ]
 
 def lambda_handler(event, context):
