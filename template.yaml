@@ -40,4 +40,4 @@ Outputs:
 
   UserApiUrl:
     Description: "Base URL of the User API"
-    Value: !Sub "https://${UserApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://bvv8hrsnbc.execute-api.${AWS::Region}.amazonaws.com/Prod/"
