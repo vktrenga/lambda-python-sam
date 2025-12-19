@@ -8,6 +8,12 @@ Globals:
 
 Resources:
 
+  UserApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      EndpointConfiguration: REGIONAL
+
   UserApiFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -19,18 +25,10 @@ Resources:
           Properties:
             Path: /users
             Method: GET
-            RestApiId:
-              Ref: UserApi
+            RestApiId: !Ref UserApi
         GetUser:
           Type: Api
           Properties:
             Path: /users/{id}
             Method: GET
-            RestApiId:
-              Ref: UserApi
-
-  UserApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: Prod
-      EndpointConfiguration: REGIONAL
+            RestApiId: !Ref UserApi

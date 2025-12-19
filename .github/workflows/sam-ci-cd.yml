@@ -1,24 +1,33 @@
-name: SAM CI & CD
+name: SAM CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
   pull_request:
 
 jobs:
+  # --------------------------
+  # CI Job: Build & Validate
+  # --------------------------
   ci:
     name: CI - Build & Validate
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Load env file
+        shell: bash
         run: |
-          set -a
-          source .env.ci
-          set +a
+          # Load env based on branch
+          if [ "${GITHUB_REF##*/}" == "main" ]; then
+            ENV_FILE=".env.prod"
+          else
+            ENV_FILE=".env.dev"
+          fi
+
+          export $(grep -v '^#' $ENV_FILE | xargs)
           echo "PYTHON_VERSION=$PYTHON_VERSION" >> $GITHUB_ENV
           echo "STACK_NAME=$STACK_NAME" >> $GITHUB_ENV
           echo "AWS_REGION=$AWS_REGION" >> $GITHUB_ENV
@@ -34,7 +43,7 @@ jobs:
         run: |
           pip install aws-sam-cli flake8
 
-      - name: Lint
+      - name: Lint code
         run: flake8 . || true
 
       - name: SAM Validate
@@ -43,21 +52,29 @@ jobs:
       - name: SAM Build
         run: sam build
 
+  # --------------------------
+  # CD Job: Deploy to AWS
+  # --------------------------
   cd:
-    name: CD - Deploy to AWS
+    name: CD - Deploy Lambda API
     needs: ci
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Load env file
+        shell: bash
         run: |
-          set -a
-          source .env.ci
-          set +a
+          if [ "${GITHUB_REF##*/}" == "main" ]; then
+            ENV_FILE=".env.prod"
+          else
+            ENV_FILE=".env.dev"
+          fi
+
+          export $(grep -v '^#' $ENV_FILE | xargs)
           echo "PYTHON_VERSION=$PYTHON_VERSION" >> $GITHUB_ENV
           echo "STACK_NAME=$STACK_NAME" >> $GITHUB_ENV
           echo "AWS_REGION=$AWS_REGION" >> $GITHUB_ENV
@@ -93,3 +110,11 @@ jobs:
               LogLevel=$LOG_LEVEL \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset
+
+      - name: Verify API Deployment
+        run: |
+          echo "API Gateway deployed at:"
+          aws cloudformation describe-stacks \
+            --stack-name $STACK_NAME \
+            --query "Stacks[0].Outputs" \
+            --output table
