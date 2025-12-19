@@ -5,7 +5,9 @@ USERS = [
     {"id": 2, "name": "Sachin"},
     {"id": 3, "name": "Dharshika"},
     {"id": 4, "name": "Surya"},
-    {"id": 5, "name": "Harish"}
+    {"id": 5, "name": "Harish"},
+    {"id": 6, "name": "Akshaya"},
+    {"id": 7, "name": "Kanchana"}
 
 ]
 
