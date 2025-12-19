@@ -7,7 +7,8 @@ USERS = [
     {"id": 4, "name": "Surya"},
     {"id": 5, "name": "Harish"},
     {"id": 6, "name": "Akshaya"},
-    {"id": 7, "name": "Kanchana"}
+    {"id": 7, "name": "Kanchana"},
+    {"id": 8, "name": "Sangeetha"},
 
 ]
 
