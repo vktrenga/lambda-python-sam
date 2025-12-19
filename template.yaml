@@ -1,5 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Description: Serverless User API with Lambda + API Gateway
 
 Globals:
   Function:
@@ -8,17 +9,19 @@ Globals:
 
 Resources:
 
+  # API Gateway
   UserApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
       EndpointConfiguration: REGIONAL
 
+  # Lambda Function
   UserApiFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: app.lambda_handler
-      CodeUri: user/
+      CodeUri: user/   # your lambda source folder
       Events:
         GetUsers:
           Type: Api
@@ -32,3 +35,9 @@ Resources:
             Path: /users/{id}
             Method: GET
             RestApiId: !Ref UserApi
+
+Outputs:
+
+  UserApiUrl:
+    Description: "Base URL of the User API"
+    Value: !Sub "https://${UserApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

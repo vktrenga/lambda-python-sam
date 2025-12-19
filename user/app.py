@@ -9,9 +9,10 @@ USERS = [
     {"id": 6, "name": "Akshaya"},
     {"id": 7, "name": "Kanchana"},
     {"id": 8, "name": "Sangeetha"},
-    {"id": 8, "name": "Arjun"},
-
+    {"id": 9, "name": "Arjun"},
+    {"id": 10, "name": "Deva"},
 ]
+
 
 def lambda_handler(event, context):
     path = event.get("path")

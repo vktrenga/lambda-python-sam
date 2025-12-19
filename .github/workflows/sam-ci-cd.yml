@@ -14,7 +14,7 @@ on:
 env:
   AWS_REGION: ap-south-1          # change if needed
   STACK_NAME: lambda-python-sam   # CloudFormation stack name
-  PYTHON_VERSION: "3.10"         # must match template.yaml runtime
+  PYTHON_VERSION: "3.10"          # must match template.yaml runtime
 
 jobs:
   ci:
@@ -36,8 +36,7 @@ jobs:
           pip install aws-sam-cli flake8
 
       - name: Lint (Python)
-        run: |
-          flake8 . || true
+        run: flake8 . || true
 
       - name: SAM Validate
         run: sam validate
@@ -82,3 +81,12 @@ jobs:
             --parameter-overrides StageName=Prod \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset
+
+      - name: Get API URL
+        run: |
+          API_URL=$(aws cloudformation describe-stacks \
+            --stack-name $STACK_NAME \
+            --region $AWS_REGION \
+            --query "Stacks[0].Outputs[?OutputKey=='UserApiUrl'].OutputValue" \
+            --output text)
+          echo "API URL: $API_URL"
