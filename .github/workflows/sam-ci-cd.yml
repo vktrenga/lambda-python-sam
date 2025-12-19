@@ -79,6 +79,6 @@ jobs:
             --stack-name $STACK_NAME \
             --region $AWS_REGION \
             --capabilities CAPABILITY_IAM \
-            --parameter-overrides StageName=prod \
+            --parameter-overrides StageName=Prod \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset
